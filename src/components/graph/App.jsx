@@ -1,7 +1,9 @@
 // @flow
 // from the-graph/the-graph.js Line 281
 
-import React from "react";
+import React from 'react';
+
+import {merge} from '../../utils';
 
 type Props = {
   className: string,
@@ -9,101 +11,170 @@ type Props = {
   x: number,
   y: number,
   width: number,
-  height: number
+  height: number,
+
+  // App.config
+      nodeSize: number,
+    nodeRadius: number,
+    nodeSide: number,
+    // Context menus
+    contextPortSize: number,
+    // Zoom breakpoints
+    zbpBig: number,
+    zbpNormal: number,
+    zbpSmall: number,
+    config: {
+      nodeSize: number,
+      nodeWidth: number,
+      nodeRadius: number,
+      nodeHeight: number,
+      autoSizeNode: boolean,
+      maxPortCount: number,
+      nodeHeightIncrement: number,
+      focusAnimationDuration: number,
+      app: ?any
+    }
 };
 
 type State = {
-
+  x: number,
+  y: number,
+  sc: number,
+  transform: string,
+  contextMenu: ?any,
+  tooltipX: number,
+  tooltipY: number,
+  tooltipVisible: boolean,
+  tooltip: string,
+  menuShown: boolean
 };
 
-  export default class App extends React.Component {
-    props: Props;
-    constructor(props: Props){
-      super(props);
-      this.props = props;
+const InitialProps = {
+  nodeSize: 72,
+  nodeRadius: 8,
+  nodeSide: 56,
+    // Context menus
+  contextPortSize: 36,
+    // Zoom breakpoints
+  zbpBig: 1.2,
+  zbpNormal: 0.4,
+  zbpSmall: 0.01,
+  config: {
+    nodeSize: 72,
+    nodeWidth: 72,
+    nodeRadius: 8,
+    nodeHeight: 72,
+    autoSizeNode: true,
+    maxPortCount: 9,
+    nodeHeightIncrement: 12,
+    focusAnimationDuration: 1500,
+    app: {
+      container: {
+        className: 'the-graph-app',
+        name: 'app'
+      },
+      canvas: {
+        ref: 'canvas',
+        className: 'app-canvas'
+      },
+      svg: {
+        className: 'app-svg'
+      },
+      svgGroup: {
+        className: 'view'
+      },
+      graph: {
+        ref: 'graph'
+      },
+      tooltip: {
+        ref: 'tooltip'
+      },
+      modal: {
+        className: 'context'
+      }
     }
-    render() {
-      // console.timeEnd("App.render");
-      // console.time("App.render");
+  }
+};
 
-      // pan and zoom
-      var sc = this.state.scale;
-      var x = this.state.x;
-      var y = this.state.y;
-      var transform = "matrix("+sc+",0,0,"+sc+","+x+","+y+")";
+export default class App extends React.Component {
 
-      var scaleClass = sc > TheGraph.zbpBig ? "big" : ( sc > TheGraph.zbpNormal ? "normal" : "small");
+  props: Props;
+  state: State;
 
-      var contextMenu, contextModal;
-      if ( this.state.contextMenu ) {
-        var options = this.state.contextMenu;
-        var menu = this.props.getMenuDef(options);
-        if (menu) {
-          contextMenu = options.element.getContext(menu, options, this.hideContext);
-        }
+  constructor(props: Props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
+    // pan and zoom
+    const sc = this.state.scale;
+    const x = this.state.x;
+    const y = this.state.y;
+    const transform = `matrix(${sc},0,0,${sc},${x},${y})`;
+
+    const scaleClass = sc > this.props.zbpBig ? 'big' : (sc > this.props.zbpNormal ? 'normal' : 'small');
+
+    let contextMenu, contextModal;
+    if (this.state.contextMenu) {
+      const options = this.state.contextMenu;
+      const menu = this.props.getMenuDef(options);
+      if (menu) {
+        contextMenu = options.element.getContext(menu, options, this.hideContext);
       }
-      if (contextMenu) {
-
-        var modalBGOptions ={
-          width: this.state.width,
-          height: this.state.height,
-          triggerHideContext: this.hideContext,
-          children: contextMenu
-        };
-
-        contextModal = [
-          TheGraph.factories.app.createAppModalBackground(modalBGOptions)
-        ];
-        this.menuShown = true;
-      } else {
-        this.menuShown = false;
-      }
-
-      var graphElementOptions = {
-        graph: this.props.graph,
-        scale: this.state.scale,
-        app: this,
-        library: this.props.library,
-        onNodeSelection: this.props.onNodeSelection,
-        onEdgeSelection: this.props.onEdgeSelection,
-        showContext: this.showContext
-      };
-      graphElementOptions = TheGraph.merge(TheGraph.config.app.graph, graphElementOptions);
-      var graphElement = TheGraph.factories.app.createAppGraph.call(this, graphElementOptions);
-
-      var svgGroupOptions = TheGraph.merge(TheGraph.config.app.svgGroup, { transform: transform });
-      var svgGroup = TheGraph.factories.app.createAppSvgGroup.call(this, svgGroupOptions, [graphElement]);
-
-      var tooltipOptions = {
-        x: this.state.tooltipX,
-        y: this.state.tooltipY,
-        visible: this.state.tooltipVisible,
-        label: this.state.tooltip
+    }
+    if (contextMenu) {
+      const modalBGOptions = {
+        width: this.state.width,
+        height: this.state.height,
+        triggerHideContext: this.hideContext,
+        children: contextMenu
       };
 
-      tooltipOptions = TheGraph.merge(TheGraph.config.app.tooltip, tooltipOptions);
-      var tooltip = TheGraph.factories.app.createAppTooltip.call(this, tooltipOptions);
-
-      var modalGroupOptions = TheGraph.merge(TheGraph.config.app.modal, { children: contextModal });
-      var modalGroup = TheGraph.factories.app.createAppModalGroup.call(this, modalGroupOptions);
-
-      var svgContents = [
-        svgGroup,
-        tooltip,
-        modalGroup
+      contextModal = [
+        <AppModalBackground {...modalBGOptions} />
       ];
-
-      const svgOptions = TheGraph.merge(TheGraph.config.app.svg, { width: this.state.width, height: this.state.height });
-      const canvasOptions = TheGraph.merge(TheGraph.config.app.canvas, { width: this.state.width, height: this.state.height });
-  
-      const containerOptions = TheGraph.merge(TheGraph.config.app.container, { style: { width: this.state.width, height: this.state.height } });
-      containerOptions.className += " " + scaleClass;
-      return (
-        <div {...containerOptions} > 
-          <AppCanvas {...canvasOptions} />
-          <AppSVG {...svgOptions} >
-            {svgContents}
-          </AppSVG>
-        </div>);
+      this.state.menuShown = true;
+    } else {
+      this.state.menuShown = false;
     }
-  };
+   
+    const config = this.props;
+
+    let graphElementOptions = {
+      graph: this.props.graph,
+      scale: this.state.scale,
+      app: this,
+      library: this.props.library,
+      onNodeSelection: this.props.onNodeSelection,
+      onEdgeSelection: this.props.onEdgeSelection,
+      showContext: this.showContext
+    };
+    graphElementOptions = merge(config.app.graph, graphElementOptions);
+    
+    const svgGroupOptions = merge(config.app.svgGroup, {transform});
+    const tooltipOptions = Object.assign(config.app.tooltip, {
+      x: this.state.tooltipX,
+      y: this.state.tooltipY,
+      visible: this.state.tooltipVisible,
+      label: this.state.tooltip
+    });
+    const modalGroupOptions = merge(config.app.modal, {children: contextModal});
+    const svgOptions = merge(config.app.svg, {width: this.state.width, height: this.state.height});
+    const canvasOptions = merge(config.app.canvas, {width: this.state.width, height: this.state.height});
+
+    const containerOptions = merge(config.app.container, {style: {width: this.state.width, height: this.state.height}});
+    containerOptions.className += ' ' + scaleClass;
+    return (
+      <div {...containerOptions} >
+        <canvas {...canvasOptions} />
+        <svg {...svgOptions} >
+          <g {...svgGroupOptions} >
+            <Graph {...graphElementOptions} />
+          </g>
+          <ToolTip {...tooltipOptions} />
+          <ModalGroup {...modalGroupOptions} />
+        </svg>
+      </div>);
+  }
+}

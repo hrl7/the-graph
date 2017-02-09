@@ -1,7 +1,5 @@
 export default class GraphEditorStore {
 
-
-
   constructor (initialState = {}){
     this.state = Object.assign({}, {
     graph : null,
@@ -25,9 +23,6 @@ export default class GraphEditorStore {
     }, initialState);
   }
 
-  get state() {
-    return this.state;
-  }
   addPlugin(name, plugin){
     plugins[name] = plugin;
     plugin.register(this);

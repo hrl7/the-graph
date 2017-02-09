@@ -277,6 +277,7 @@ module.exports.register = function (context) {
 
 
   // Reusable React classes
+  /*
   TheGraph.SVGImage = React.createFactory( React.createClass({
     displayName: "TheGraphSVGImage",
     render: function() {
@@ -284,7 +285,7 @@ module.exports.register = function (context) {
         html = html +'xlink:href="'+ this.props.src + '"';
         html = html +'x="' + this.props.x + '"';
         html = html +'y="' + this.props.y + '"';
-        html = html +'width="' + this.props.width + '"';
+        html 1= html +'width="' + this.props.width + '"';
         html = html +'height="' + this.props.height + '"';
         html = html +'/>';
 
@@ -343,6 +344,7 @@ module.exports.register = function (context) {
     }
   }));
 
+*/
   // The `merge` function provides simple property merging.
   TheGraph.merge = function(src, dest, overwrite) {
     // Do nothing if neither are true objects.

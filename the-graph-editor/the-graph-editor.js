@@ -2,7 +2,7 @@
 
 
 import React from "react";
-import theGraph from "../src/components/Graph";
+import TheGraph from "../src/components/Graph";
 import fbpGraph from "fbp-graph";
 
 type Props = {
@@ -45,8 +45,8 @@ export default class theGraphEditor extends React.Component {
 
 
   render () {
-    return (<theGraph id="graph"
-      name="{{ graph.properties.name }}"
+    return (<TheGraph id="graph"
+      name="{{graph.properties.name }}"
       graph="{{fbpGraph}}"
       menus="{{menus}}"
       width="{{width}}" height="{{height}}"

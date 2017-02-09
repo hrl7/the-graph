@@ -1,4 +1,4 @@
-loadGraph({
+{
   "id": "ti6yn",
   "project": "",
   "properties": {
@@ -1428,4 +1428,4 @@ loadGraph({
       }
     }
   ]
-});
+}
