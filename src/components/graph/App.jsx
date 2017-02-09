@@ -4,6 +4,7 @@
 import React from 'react';
 
 import {merge} from '../../utils';
+import RawGraph from "./raw-graph";
 
 type Props = {
   className: string,
@@ -49,7 +50,7 @@ type State = {
   menuShown: boolean
 };
 
-const InitialProps = {
+const DefaultProps = {
   nodeSize: 72,
   nodeRadius: 8,
   nodeSide: 56,
@@ -96,6 +97,13 @@ const InitialProps = {
   }
 };
 
+const InitialState: State = {
+  scale: 1,
+  x: 760,
+  y: 640
+  
+};
+
 export default class App extends React.Component {
 
   props: Props;
@@ -104,6 +112,7 @@ export default class App extends React.Component {
   constructor(props: Props) {
     super(props);
     this.props = props;
+    this.state = InitialState;
   }
 
   render() {
@@ -150,7 +159,8 @@ export default class App extends React.Component {
       onEdgeSelection: this.props.onEdgeSelection,
       showContext: this.showContext
     };
-    graphElementOptions = merge(config.app.graph, graphElementOptions);
+   console.log(this.props);
+   // graphElementOptions = merge(config.app.graph, graphElementOptions);
     
     const svgGroupOptions = merge(config.app.svgGroup, {transform});
     const tooltipOptions = Object.assign(config.app.tooltip, {
@@ -170,7 +180,7 @@ export default class App extends React.Component {
         <canvas {...canvasOptions} />
         <svg {...svgOptions} >
           <g {...svgGroupOptions} >
-            <Graph {...graphElementOptions} />
+            <RawGraph {...graphElementOptions} />
           </g>
           <ToolTip {...tooltipOptions} />
           <ModalGroup {...modalGroupOptions} />

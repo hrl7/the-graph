@@ -3,6 +3,7 @@
 
 import React from 'react';
 
+import App from "./graph/app";
 
 type Props = {
   className: string,
@@ -19,7 +20,7 @@ export default class TheGraph extends React.Component {
 
   render() {
     return (<div>
-
+      <App />
     </div>);
   }
 }

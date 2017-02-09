@@ -148,6 +148,7 @@ module.exports.register = function (context) {
     };
   };
 
+ /*
   TheGraph.findFit = function (graph, width, height) {
     var limits = TheGraph.findMinMax(graph);
     if (!limits) {
@@ -181,6 +182,7 @@ module.exports.register = function (context) {
       scale: scale
     };
   };
+  */
 
   TheGraph.findAreaFit = function (point1, point2, width, height) {
     var limits = {
@@ -344,7 +346,6 @@ module.exports.register = function (context) {
     }
   }));
 
-*/
   // The `merge` function provides simple property merging.
   TheGraph.merge = function(src, dest, overwrite) {
     // Do nothing if neither are true objects.
@@ -362,6 +363,7 @@ module.exports.register = function (context) {
 
     return dest;
   };
+*/
 
   TheGraph.factories.createGroup = function(options, content) {
     var args = [options];
