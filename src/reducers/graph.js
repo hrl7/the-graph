@@ -1,7 +1,11 @@
 import Act from "../actions/Types";
 
 const InitialState = {
+  rawGraph: {
+    nodes: []
+  },
   graph: null,
+  components: {},
   loading: false,
   ready: false,
   nodeSize: 72,
@@ -19,7 +23,7 @@ export default function graphReducer(state=InitialState, action){
       return {...state, loading: true};
     case Act.LOAD_GRAPH_SUCCESS:
       return {...state,
-       data: action.payload,
+       rawGraph: action.payload,
        components: componentsFromGraph(action.payload),
        loading: false,
        ...findFit(action.payload, state)
@@ -66,9 +70,7 @@ const findFit = (graph, {width, height, nodeSize}) => {
 const findMinMax = (graph, nodes?) => {
     let inports, outports;
     if (nodes === undefined) {
-      nodes = graph.nodes.map( function (node) {
-        return node.id;
-      });
+      nodes = graph.nodes.map(node => node.id);
       // Only look at exports when calculating the whole graph
       inports = graph.inports;
       outports = graph.outports;

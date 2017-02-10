@@ -8,7 +8,7 @@ import FBPGraph from "fbp-graph";
 import { loadGraph, graphLoading, graphLoaded } from "../actions/graph";
 import Act from "../actions/Types";
 
-const debug = Debug("graph:epic:device");
+const debug = Debug("graph:epic:graph");
 
 const loadJSON = async graphJSON => { return new Promise((resolve, reject) => {
   FBPGraph.graph.loadJSON(graphJSON, (err, graph) => {

@@ -18,7 +18,6 @@ export default class Injector {
 // script.src = 'https://api.github.com/gists/6890344?callback=loadGraph';
 
   loadGraph(url: string) {
-    console.log(loadGraph(url));
     this.store.dispatch(loadGraph(url));
   }
 

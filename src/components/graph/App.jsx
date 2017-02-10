@@ -114,13 +114,63 @@ export default class App extends React.Component {
     super(props);
     this.props = props;
     this.state = InitialState;
+    window.app = this;
+
+  this.renderGrid = () => {
+      const cvs = this.refs["grid-canvas"];
+      if(!cvs) {
+        return;
+      }
+      const c = cvs.getContext("2d");
+      if (!c) {
+        return;
+      }
+      // Comment this line to go plaid
+      c.clearRect(0, 0, this.state.width, this.state.height);
+
+      // Background grid pattern
+      const scale = this.state.scale;
+      const g = this.props.nodeSize * scale;
+
+      const dx = this.state.x % g;
+      const dy = this.state.y % g;
+      const cols = Math.floor(this.state.width / g) + 1;
+      let row = Math.floor(this.state.height / g) + 1;
+      // Origin row/col index
+      const oc = Math.floor(this.state.x / g) + (this.state.x < 0 ? 1 : 0);
+      const or = Math.floor(this.state.y / g) + (this.state.y < 0 ? 1 : 0);
+
+      while (row--) {
+        let col = cols;
+        while (col--) {
+          const x = Math.round(col*g+dx);
+          const y = Math.round(row*g+dy);
+          if ((oc-col)%3===0 && (or-row) % 3 === 0) {
+            // 3x grid
+            c.fillStyle = "white";
+            c.fillRect(x, y, 1, 1);
+          } else if (scale > 0.5) {
+            // 1x grid
+            c.fillStyle = "grey";
+            c.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+    };
+
+  }  
+
+  componentDidUpdate() {
+    this.renderGrid();
   }
+
 
   render() {
     // pan and zoom
     const sc = this.state.scale;
     const x = this.state.x;
     const y = this.state.y;
+    // TODO: add resize event
     const transform = `matrix(${sc},0,0,${sc},${x},${y})`;
 
     const scaleClass = sc > this.props.zbpBig ? 'big' : (sc > this.props.zbpNormal ? 'normal' : 'small');
@@ -162,7 +212,7 @@ export default class App extends React.Component {
     };
    // graphElementOptions = merge(config.app.graph, graphElementOptions);
 
-    const svgGroupOptions = {transform};//merge(config.app.svgGroup, {transform});
+    const svgGroupOptions = {};//merge(config.app.svgGroup, {transform});
     const tooltipOptions = Object.assign({}, {//Object.assign(config.app.tooltip, {
       x: this.state.tooltipX,
       y: this.state.tooltipY,
@@ -177,16 +227,18 @@ export default class App extends React.Component {
     containerOptions.className += ' ' + scaleClass;
     return (
       <div {...containerOptions} >
-        <canvas {...canvasOptions} />
-        <svg {...svgOptions} >
+        <svg className="the-graph-dark" width={window.innerWidth} height={window.innerHeight} >
           <g {...svgGroupOptions} >
-            <RawGraph {...graphElementOptions} />
+            <RawGraph {...graphElementOptions} width={window.innerWidth} height={window.innerHeight} />
           </g>
           <Tooltip />
         </svg>
+        <canvas ref="grid-canvas" {...canvasOptions} />
       </div>);
   }
 }
+
+App.defaultProps = DefaultProps;
 /* next of g
 <ModalGroup {...modalGroupOptions} />
 */

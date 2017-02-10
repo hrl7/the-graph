@@ -50,6 +50,8 @@ module.exports = {
     contentBase: [
       path.join(__dirname, './src'),
       path.join(__dirname, './dist'),
+      path.join(__dirname, './themes'),
+      path.join(__dirname, './node_modules/font-awesome'),
       path.join(__dirname, './examples')],
     watchContentBase: true,
     compress: true,
