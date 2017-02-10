@@ -5,6 +5,7 @@ import React from 'react';
 
 import {merge} from '../../utils';
 import RawGraph from "./raw-graph";
+import Tooltip from "./tooltip";
 
 type Props = {
   className: string,
@@ -101,7 +102,7 @@ const InitialState: State = {
   scale: 1,
   x: 760,
   y: 640
-  
+
 };
 
 export default class App extends React.Component {
@@ -147,7 +148,7 @@ export default class App extends React.Component {
     } else {
       this.state.menuShown = false;
     }
-   
+
     const config = this.props;
 
     let graphElementOptions = {
@@ -159,21 +160,20 @@ export default class App extends React.Component {
       onEdgeSelection: this.props.onEdgeSelection,
       showContext: this.showContext
     };
-   console.log(this.props);
    // graphElementOptions = merge(config.app.graph, graphElementOptions);
-    
-    const svgGroupOptions = merge(config.app.svgGroup, {transform});
-    const tooltipOptions = Object.assign(config.app.tooltip, {
+
+    const svgGroupOptions = {transform};//merge(config.app.svgGroup, {transform});
+    const tooltipOptions = Object.assign({}, {//Object.assign(config.app.tooltip, {
       x: this.state.tooltipX,
       y: this.state.tooltipY,
       visible: this.state.tooltipVisible,
       label: this.state.tooltip
     });
-    const modalGroupOptions = merge(config.app.modal, {children: contextModal});
-    const svgOptions = merge(config.app.svg, {width: this.state.width, height: this.state.height});
-    const canvasOptions = merge(config.app.canvas, {width: this.state.width, height: this.state.height});
+    const modalGroupOptions ={children: contextModal};// merge(config.app.modal, {children: contextModal});
+    const svgOptions ={width: this.state.width, height: this.state.height};// merge(config.app.svg, {width: this.state.width, height: this.state.height});
+    const canvasOptions = {width: this.state.width, height: this.state.height}; //merge(config.app.canvas, {width: this.state.width, height: this.state.height});
 
-    const containerOptions = merge(config.app.container, {style: {width: this.state.width, height: this.state.height}});
+    const containerOptions ={style: {width: this.state.width, height: this.state.height}};// merge(config.app.container, {style: {width: this.state.width, height: this.state.height}});
     containerOptions.className += ' ' + scaleClass;
     return (
       <div {...containerOptions} >
@@ -182,9 +182,11 @@ export default class App extends React.Component {
           <g {...svgGroupOptions} >
             <RawGraph {...graphElementOptions} />
           </g>
-          <ToolTip {...tooltipOptions} />
-          <ModalGroup {...modalGroupOptions} />
+          <Tooltip />
         </svg>
       </div>);
   }
 }
+/* next of g
+<ModalGroup {...modalGroupOptions} />
+*/

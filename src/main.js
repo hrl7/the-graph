@@ -1,6 +1,8 @@
 // @flow
 
 import "rxjs";
+import 'babel-polyfill';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
