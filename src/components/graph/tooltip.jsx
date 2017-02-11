@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React from 'react';
 
 type Props = {
   x: number,
@@ -16,8 +16,8 @@ type State = {
 };
 
 const InitialState = {
-  width: 0,
-}
+  width: 0
+};
 
 class ToolTip extends React.Component {
   props: Props;
@@ -37,10 +37,10 @@ class ToolTip extends React.Component {
 
   render() {
     const props = this.props;
-    return (<g 
+    return (<g
       transform={`translate(${props.x},${props.y})`}
-      className={`tooltip ${(props.visible ? "" : " hidden")}`}>
-      <rect 
+      className={`tooltip ${(props.visible ? '' : ' hidden')}`}>
+      <rect
         className="tooltip-bg"
         x={props.x}
         y={props.y}
@@ -53,16 +53,16 @@ class ToolTip extends React.Component {
       </text>
     </g>);
   }
-};
+}
 
 ToolTip.defaultProps = {
-    x: 0,
-    y: -7,
-    rx: 3,
-    ry: 3,
-    height: 16,
-    visible: false,
-    label: ""
-  };
+  x: 0,
+  y: -7,
+  rx: 3,
+  ry: 3,
+  height: 16,
+  visible: false,
+  label: ''
+};
 
 export default ToolTip;

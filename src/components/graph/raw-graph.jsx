@@ -1,11 +1,11 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import Debug from "debug";
+import React from 'react';
+import {connect} from 'react-redux';
+import Debug from 'debug';
 
-import Node from "./node";
-const debug = Debug("graph:raw-graph");
+import Node from './node';
+const debug = Debug('graph:raw-graph');
 
 type Props = {
 
@@ -14,12 +14,13 @@ class RawGraph extends React.Component {
 
   constructor(props) {
     super(props);
-    debug("raw graph initialized");
+    debug('raw graph initialized');
   }
   render() {
     const nodes = this.props.rawGraph.nodes.map(node => {
       return <Node key={node.id} {...node} />;
     });
+
     debug(nodes);
     return (
       <g>

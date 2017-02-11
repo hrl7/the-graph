@@ -1,67 +1,8 @@
-import React from "react";
-import SubLabel from "./sub-label";
-import Label from "./label";
-import Icon from "./icon";
+import React from 'react';
+import SubLabel from './sub-label';
+import Label from './label';
+import Icon from './icon';
 
-/*
-  // Initialize namespace for configuration and factory functions.
-  TheGraph.config.node = {
-    snap: TheGraph.config.nodeSize,
-    container: {},
-    background: {
-      className: "node-bg"
-    },
-    border: {
-      className: "node-border drag",
-      rx: TheGraph.config.nodeRadius,
-      ry: TheGraph.config.nodeRadius
-    },
-    innerRect: {
-      className: "node-rect drag",
-      x: 3,
-      y: 3,
-      rx: TheGraph.config.nodeRadius - 2,
-      ry: TheGraph.config.nodeRadius - 2
-    },
-    icon: {
-      ref: "icon",
-      className: "icon node-icon drag"
-    },
-    iconsvg: {
-      className: "icon node-icon drag"
-    },
-    inports: {
-      className: "inports"
-    },
-    outports: {
-      className: "outports"
-    },
-    labelBackground: {
-      className: "node-label-bg"
-    },
-    labelRect: {
-      className: "text-bg-rect"
-    },
-    labelText: {
-      className: "node-label"
-    },
-    sublabelBackground: {
-      className: "node-sublabel-bg"
-    },
-    sublabelRect: {
-      className: "text-bg-rect"
-    },
-    sublabelText: {
-      className: "node-sublabel"
-    }
-  };
-
-
-
-  function createNodePort(options) {
-    return TheGraph.Port(options);
-  }
-*/
   // PolymerGestures monkeypatch
   /*
   function patchGestures() {
@@ -286,11 +227,11 @@ import Icon from "./icon";
 
   // Node view
 export default class Node extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    componentDidMount() {
-      
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
+
       // Dragging
       // domNode.addEventListener("trackstart", this.onTrackStart);
 
@@ -300,17 +241,16 @@ export default class Node extends React.Component {
       // }
 
       // Context menu
-      //if (this.props.showContext) {
+      // if (this.props.showContext) {
       //  ReactDOM.findDOMNode(this).addEventListener("contextmenu", this.showContext);
       //  ReactDOM.findDOMNode(this).addEventListener("hold", this.showContext);
-      
-    }
 
+  }
 
-    shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
       // Only rerender if changed
-      return (
-        nextProps.x !== this.props.x || 
+    return (
+        nextProps.x !== this.props.x ||
         nextProps.y !== this.props.y ||
         nextProps.icon !== this.props.icon ||
         nextProps.label !== this.props.label ||
@@ -320,11 +260,10 @@ export default class Node extends React.Component {
         nextProps.error !== this.props.error ||
         nextProps.highlightPort !== this.props.highlightPort ||
         nextProps.ports.dirty === true
-      );
-    }
+    );
+  }
 
-    render() {
-
+  render() {
       /*
       if (this.props.ports.dirty) {
         // This tag is set when an edge or iip changes port colors
@@ -332,21 +271,21 @@ export default class Node extends React.Component {
       }
       */
 
-      const metadata = this.props.metadata; 
-      const label = metadata.label;
-      let sublabel = metadata.sublabel;
-      if (!sublabel || sublabel === label) {
-        sublabel = "";
-      }
+    const metadata = this.props.metadata;
+    const label = metadata.label;
+    let sublabel = metadata.sublabel;
+    if (!sublabel || sublabel === label) {
+      sublabel = '';
+    }
 
-      const x = metadata.x;
-      const y = metadata.y;
+    const x = metadata.x;
+    const y = metadata.y;
 
-      // TODO: these constants should be in config 
-      const width = 72;
-      const height = 72;
-      const radius = 8;
-      const icon = ["apple","arrow-left","edge","forumbee"][Math.floor(Math.random() * 4)];
+      // TODO: these constants should be in config
+    const width = 72;
+    const height = 72;
+    const radius = 8;
+    const icon = ['apple', 'arrow-left', 'edge', 'forumbee'][Math.floor(Math.random() * 4)];
 /*
       // Ports
       var keys, count;
@@ -417,29 +356,27 @@ export default class Node extends React.Component {
         return TheGraph.factories.node.createNodePort(props);
       });
 
-  
-
       var inportsOptions = TheGraph.merge(TheGraph.config.node.inports, { children: inportViews });
       var inportsGroup = TheGraph.factories.node.createNodeInportsGroup.call(this, inportsOptions);
 
       var outportsOptions = TheGraph.merge(TheGraph.config.node.outports, { children: outportViews });
       var outportsGroup = TheGraph.factories.node.createNodeOutportsGroup.call(this, outportsOptions);
-*/          
+*/
 
-      return (
-        <g 
-          className={`node drag ${this.props.selected ? " selected" : ""} ${this.props.error ? " error" : ""}`}
-          name={this.props.component}
-          title={label}
-          transform={`translate(${x},${y})`}>
-          <rect className="node-bg" x="0" y="0" rx={radius} ry={radius} width={width} height={Number(height) + 25}/>
-          <rect className="node-border drag" x="0" y="0" width={width} rx={radius} ry={radius} height={height}/>
-          <rect className="node-rect drag" x="3" y="3" width={width-6} rx={radius-2} ry={radius-2} height={height-6}/>
-          <Icon width={width} height={height} radius={radius} icon={icon}/>
-          <Label text={label} width={width} height={height} />
-          <SubLabel text={sublabel} width={width} height={height} />
-        </g>);
-    }
+    return (
+      <g
+        className={`node drag ${this.props.selected ? ' selected' : ''} ${this.props.error ? ' error' : ''}`}
+        name={this.props.component}
+        title={label}
+        transform={`translate(${x},${y})`}>
+        <rect className="node-bg" x="0" y="0" rx={radius} ry={radius} width={width} height={Number(height) + 25}/>
+        <rect className="node-border drag" x="0" y="0" width={width} rx={radius} ry={radius} height={height}/>
+        <rect className="node-rect drag" x="3" y="3" width={width - 6} rx={radius - 2} ry={radius - 2} height={height - 6}/>
+        <Icon width={width} height={height} radius={radius} icon={icon}/>
+        <Label text={label} width={width} height={height} />
+        <SubLabel text={sublabel} width={width} height={height} />
+      </g>);
+  }
   }
 /*
   TheGraph.factories.node = {

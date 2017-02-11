@@ -1,9 +1,8 @@
 // @flow
 
-
-import React from "react";
-import TheGraph from "./Graph";
-import fbpGraph from "fbp-graph";
+import React from 'react';
+import TheGraph from './Graph';
+import fbpGraph from 'fbp-graph';
 
 type Props = {
   grid: number,
@@ -21,7 +20,6 @@ type Props = {
   forceSelection: any
 };
 
-
 export default class theGraphEditor extends React.Component {
   props: Props;
   pan: number[];
@@ -29,22 +27,19 @@ export default class theGraphEditor extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.pan = [0,0];
+    this.pan = [0, 0];
     // TODO: add menu callback
     // this.menus = TheGraph.editor.getDefaultMenus(this);
-
   }
 
   componentWillUnmount() {
-
-    for (var name in this.plugins) {
+    for (const name in this.plugins) {
       this.plugins[name].unregister(this);
       delete this.plugins[name];
     }
   }
 
-
-  render () {
+  render() {
     return (<TheGraph id="graph"
       name="{{graph.properties.name }}"
       graph="{{fbpGraph}}"
@@ -61,4 +56,4 @@ export default class theGraphEditor extends React.Component {
       forceSelection="{{forceSelection}}"
       getMenuDef="{{getMenuDef}}" />);
   }
-};
+}

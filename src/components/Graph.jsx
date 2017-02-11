@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import App from "./graph/app";
+import App from './graph/app';
 
 type Props = {
   className: string,

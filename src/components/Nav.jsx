@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import TheGraphThumb from "./thumb";
+import TheGraphThumb from './thumb';
 
 type Props = {
   className: string,
@@ -14,7 +14,7 @@ type Props = {
   TODO: we should implement this style
 
       <style>
-      #thumb, 
+      #thumb,
       #outcanvas {
         position: absolute;
         top: 0;
@@ -51,7 +51,7 @@ export default class Nav extends React.Component {
         thumbscale="{{thumbscale}}"
         hide="{{hide}}"
         theme="{{ editor.theme }}" />
-      <canvas id="outcanvas" width="{{width}}" height="{{height}}" style={{position:"absolute",top:0, left:0}}></canvas>
+      <canvas id="outcanvas" width="{{width}}" height="{{height}}" style={{position: 'absolute', top: 0, left: 0}}></canvas>
       <div id="viewrect"></div>
     </div>);
   }

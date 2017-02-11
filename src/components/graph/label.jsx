@@ -17,13 +17,12 @@ export default class Label extends React.Component {
   }
 
   render() {
-
-    const 
-      height = 14, 
+    const
+      height = 14,
       x = this.props.width * 0.5,
       y = this.props.height + 15,
       text = this.props.text,
-      width = text.length * height * 2/3,
+      width = text.length * height * 2 / 3,
       radius = height * 0.5
       ;
 
@@ -50,5 +49,5 @@ export default class Label extends React.Component {
 Label.defaultProps = {
   width: 0,
   height: 0,
-  text: ""
-}
+  text: ''
+};

@@ -17,13 +17,12 @@ export default class SubLabel extends React.Component {
   }
 
   render() {
-
-    const 
-      height = 9, 
+    const
+      height = 9,
       x = this.props.width * 0.5,
       y = this.props.height + 30,
       text = this.props.text,
-      width = text.length * height * 2/3,
+      width = text.length * height * 2 / 3,
       radius = height * 0.5
       ;
 
@@ -50,5 +49,5 @@ export default class SubLabel extends React.Component {
 SubLabel.defaultProps = {
   width: 0,
   height: 0,
-  text: ""
-}
+  text: ''
+};

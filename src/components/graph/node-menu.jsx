@@ -1,10 +1,9 @@
 module.exports.register = function (context) {
-
-  var TheGraph = context.TheGraph;
+  const TheGraph = context.TheGraph;
 
   TheGraph.config.nodeMenu = {
     container: {
-      className: "context-node"
+      className: 'context-node'
     },
     inports: {},
     outports: {},
@@ -18,7 +17,7 @@ module.exports.register = function (context) {
     createNodeMenuGroup: TheGraph.factories.createGroup,
     createNodeMenuInports: createNodeMenuPorts,
     createNodeMenuOutports: createNodeMenuPorts,
-    createNodeMenuMenu: createNodeMenuMenu
+    createNodeMenuMenu
   };
 
   function createNodeMenuPorts(options) {
@@ -29,57 +28,57 @@ module.exports.register = function (context) {
     return TheGraph.Menu(options);
   }
 
-  TheGraph.NodeMenu = React.createFactory( React.createClass({
-    displayName: "TheGraphNodeMenu",
+  TheGraph.NodeMenu = React.createFactory(React.createClass({
+    displayName: 'TheGraphNodeMenu',
     radius: 72,
-    stopPropagation: function (event) {
+    stopPropagation(event) {
       // Don't drag graph
       event.stopPropagation();
     },
-    componentDidMount: function () {
+    componentDidMount() {
       // Prevent context menu
-      ReactDOM.findDOMNode(this).addEventListener("contextmenu", function (event) {
+      ReactDOM.findDOMNode(this).addEventListener('contextmenu', event => {
         event.stopPropagation();
         event.preventDefault();
       }, false);
     },
-    render: function() {
-      var scale = this.props.node.props.app.state.scale;
-      var ports = this.props.ports;
-      var deltaX = this.props.deltaX;
-      var deltaY = this.props.deltaY;
+    render() {
+      const scale = this.props.node.props.app.state.scale;
+      const ports = this.props.ports;
+      const deltaX = this.props.deltaX;
+      const deltaY = this.props.deltaY;
 
-      var inportsOptions = {
+      let inportsOptions = {
         ports: ports.inports,
         isIn: true,
-        scale: scale,
+        scale,
         processKey: this.props.processKey,
-        deltaX: deltaX,
-        deltaY: deltaY,
+        deltaX,
+        deltaY,
         nodeWidth: this.props.nodeWidth,
         nodeHeight: this.props.nodeHeight,
         highlightPort: this.props.highlightPort
       };
 
       inportsOptions = TheGraph.merge(TheGraph.config.nodeMenu.inports, inportsOptions);
-      var inports = TheGraph.factories.nodeMenu.createNodeMenuInports.call(this, inportsOptions);
+      const inports = TheGraph.factories.nodeMenu.createNodeMenuInports.call(this, inportsOptions);
 
-      var outportsOptions = {
+      let outportsOptions = {
         ports: ports.outports,
         isIn: false,
-        scale: scale,
+        scale,
         processKey: this.props.processKey,
-        deltaX: deltaX,
-        deltaY: deltaY,
+        deltaX,
+        deltaY,
         nodeWidth: this.props.nodeWidth,
         nodeHeight: this.props.nodeHeight,
         highlightPort: this.props.highlightPort
       };
 
       outportsOptions = TheGraph.merge(TheGraph.config.nodeMenu.outports, outportsOptions);
-      var outports = TheGraph.factories.nodeMenu.createNodeMenuOutports.call(this, outportsOptions);
+      const outports = TheGraph.factories.nodeMenu.createNodeMenuOutports.call(this, outportsOptions);
 
-      var menuOptions = {
+      let menuOptions = {
         menu: this.props.menu,
         options: this.props.options,
         triggerHideContext: this.props.triggerHideContext,
@@ -88,21 +87,18 @@ module.exports.register = function (context) {
       };
 
       menuOptions = TheGraph.merge(TheGraph.config.nodeMenu.menu, menuOptions);
-      var menu = TheGraph.factories.nodeMenu.createNodeMenuMenu.call(this, menuOptions);
+      const menu = TheGraph.factories.nodeMenu.createNodeMenuMenu.call(this, menuOptions);
 
-      var children = [
+      const children = [
         inports, outports, menu
       ];
 
-      var containerOptions = {
-        transform: "translate("+this.props.x+","+this.props.y+")",
-        children: children
+      let containerOptions = {
+        transform: 'translate(' + this.props.x + ',' + this.props.y + ')',
+        children
       };
       containerOptions = TheGraph.merge(TheGraph.config.nodeMenu.container, containerOptions);
       return TheGraph.factories.nodeMenu.createNodeMenuGroup.call(this, containerOptions);
-
     }
   }));
-
-
 };

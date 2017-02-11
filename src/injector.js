@@ -1,9 +1,9 @@
 // @flow
 
-import { loadGraph } from "./actions/graph";
+import {loadGraph} from './actions/graph';
 
 export default class Injector {
-  constructor(store){
+  constructor(store) {
     this.store = store;
   }
 
@@ -29,5 +29,4 @@ export default class Injector {
 
   }
 }
-
 

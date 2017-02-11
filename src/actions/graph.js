@@ -1,6 +1,6 @@
-import { createAction } from "redux-actions";
+import {createAction} from 'redux-actions';
 
-import Act from "./Types";
+import Act from './Types';
 
 export const loadGraph = createAction(Act.LOAD_GRAPH);
 export const graphLoading = createAction(Act.LOAD_GRAPH_WAITING);

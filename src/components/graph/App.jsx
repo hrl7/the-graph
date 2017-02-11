@@ -4,8 +4,8 @@
 import React from 'react';
 
 import {merge} from '../../utils';
-import RawGraph from "./raw-graph";
-import Tooltip from "./tooltip";
+import RawGraph from './raw-graph';
+import Tooltip from './tooltip';
 
 type Props = {
   className: string,
@@ -116,12 +116,12 @@ export default class App extends React.Component {
     this.state = InitialState;
     window.app = this;
 
-  this.renderGrid = () => {
-      const cvs = this.refs["grid-canvas"];
-      if(!cvs) {
+    this.renderGrid = () => {
+      const cvs = this.refs['grid-canvas'];
+      if (!cvs) {
         return;
       }
-      const c = cvs.getContext("2d");
+      const c = cvs.getContext('2d');
       if (!c) {
         return;
       }
@@ -143,27 +143,25 @@ export default class App extends React.Component {
       while (row--) {
         let col = cols;
         while (col--) {
-          const x = Math.round(col*g+dx);
-          const y = Math.round(row*g+dy);
-          if ((oc-col)%3===0 && (or-row) % 3 === 0) {
+          const x = Math.round(col * g + dx);
+          const y = Math.round(row * g + dy);
+          if ((oc - col) % 3 === 0 && (or - row) % 3 === 0) {
             // 3x grid
-            c.fillStyle = "white";
+            c.fillStyle = 'white';
             c.fillRect(x, y, 1, 1);
           } else if (scale > 0.5) {
             // 1x grid
-            c.fillStyle = "grey";
+            c.fillStyle = 'grey';
             c.fillRect(x, y, 1, 1);
           }
         }
       }
     };
-
-  }  
+  }
 
   componentDidUpdate() {
     this.renderGrid();
   }
-
 
   render() {
     // pan and zoom
@@ -201,7 +199,7 @@ export default class App extends React.Component {
 
     const config = this.props;
 
-    let graphElementOptions = {
+    const graphElementOptions = {
       graph: this.props.graph,
       scale: this.state.scale,
       app: this,
@@ -212,18 +210,18 @@ export default class App extends React.Component {
     };
    // graphElementOptions = merge(config.app.graph, graphElementOptions);
 
-    const svgGroupOptions = {};//merge(config.app.svgGroup, {transform});
-    const tooltipOptions = Object.assign({}, {//Object.assign(config.app.tooltip, {
+    const svgGroupOptions = {};// merge(config.app.svgGroup, {transform});
+    const tooltipOptions = Object.assign({}, {// Object.assign(config.app.tooltip, {
       x: this.state.tooltipX,
       y: this.state.tooltipY,
       visible: this.state.tooltipVisible,
       label: this.state.tooltip
     });
-    const modalGroupOptions ={children: contextModal};// merge(config.app.modal, {children: contextModal});
-    const svgOptions ={width: this.state.width, height: this.state.height};// merge(config.app.svg, {width: this.state.width, height: this.state.height});
-    const canvasOptions = {width: this.state.width, height: this.state.height}; //merge(config.app.canvas, {width: this.state.width, height: this.state.height});
+    const modalGroupOptions = {children: contextModal};// merge(config.app.modal, {children: contextModal});
+    const svgOptions = {width: this.state.width, height: this.state.height};// merge(config.app.svg, {width: this.state.width, height: this.state.height});
+    const canvasOptions = {width: this.state.width, height: this.state.height}; // merge(config.app.canvas, {width: this.state.width, height: this.state.height});
 
-    const containerOptions ={style: {width: this.state.width, height: this.state.height}};// merge(config.app.container, {style: {width: this.state.width, height: this.state.height}});
+    const containerOptions = {style: {width: this.state.width, height: this.state.height}};// merge(config.app.container, {style: {width: this.state.width, height: this.state.height}});
     containerOptions.className += ' ' + scaleClass;
     return (
       <div {...containerOptions} >

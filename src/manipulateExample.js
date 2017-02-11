@@ -22,18 +22,19 @@
     */
 
     // Simulate node icon updates
-          
-    var iconKeys = Object.keys(TheGraph.FONT_AWESOME);
-    window.setInterval(function () {
-    if (!editor.fbpGraph) { return; }
-     var nodes = editor.fbpGraph.nodes;
-            if (nodes.length>0) {
-              var randomNodeId = nodes[Math.floor(Math.random()*nodes.length)].id;
-              var randomIcon = iconKeys[Math.floor(Math.random()*iconKeys.length)];
-              editor.updateIcon(randomNodeId, randomIcon);
-            }
-          }, 1000);
-          
+
+    const iconKeys = Object.keys(TheGraph.FONT_AWESOME);
+    window.setInterval(() => {
+      if (!editor.fbpGraph) {
+        return;
+      }
+      const nodes = editor.fbpGraph.nodes;
+      if (nodes.length > 0) {
+        const randomNodeId = nodes[Math.floor(Math.random() * nodes.length)].id;
+        const randomIcon = iconKeys[Math.floor(Math.random() * iconKeys.length)];
+        editor.updateIcon(randomNodeId, randomIcon);
+      }
+    }, 1000);
 
           // Simulate un/triggering wire animations
     let animatingEdge1 = null;
