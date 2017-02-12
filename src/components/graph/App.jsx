@@ -225,13 +225,14 @@ export default class App extends React.Component {
     containerOptions.className += ' ' + scaleClass;
     return (
       <div {...containerOptions} >
+        <canvas ref="grid-canvas" {...canvasOptions} />
+
         <svg className="the-graph-dark" width={window.innerWidth} height={window.innerHeight} >
           <g {...svgGroupOptions} >
             <RawGraph {...graphElementOptions} width={window.innerWidth} height={window.innerHeight} />
           </g>
           <Tooltip />
         </svg>
-        <canvas ref="grid-canvas" {...canvasOptions} />
       </div>);
   }
 }

@@ -21,11 +21,6 @@ export default class TextBG extends React.Component {
 
   constructor(props: Props) {
     super(props);
-
-    props.className = props.className || 'text-bg-text';
-
-    props.textClassName = props.textClassName || 'text-bg-text';
-
     this.props = props;
   }
 
@@ -66,3 +61,9 @@ export default class TextBG extends React.Component {
     </rect>);
   }
 }
+
+TextBG.defaultProps = {
+  className: 'text-bg-text',
+  textClassName: 'text-bg-text'
+};
+

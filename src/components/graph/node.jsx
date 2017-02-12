@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import SubLabel from './sub-label';
 import Label from './label';

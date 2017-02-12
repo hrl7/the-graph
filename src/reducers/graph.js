@@ -2,7 +2,9 @@ import Act from '../actions/Types';
 
 const InitialState = {
   rawGraph: {
-    nodes: []
+    nodes: [],
+    edges: [],
+    initializers: []
   },
   graph: null,
   components: {},
