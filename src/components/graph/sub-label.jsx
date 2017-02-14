@@ -38,6 +38,7 @@ export default class SubLabel extends React.Component {
         y={y - height * 1.5}
         />
       <text
+        className="node-sublabel"
         x={x}
         y={y}>
         {text}

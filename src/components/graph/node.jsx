@@ -1,8 +1,13 @@
 // @flow
 import React from 'react';
+import Debug from "debug";
+
 import SubLabel from './sub-label';
 import Label from './label';
 import Icon from './icon';
+import Port from "./port";
+
+const debug = Debug("graph:components:node");
 
   // PolymerGestures monkeypatch
   /*
@@ -364,6 +369,29 @@ export default class Node extends React.Component {
       var outportsGroup = TheGraph.factories.node.createNodeOutportsGroup.call(this, outportsOptions);
 */
 
+
+      const _outports = this.props.ports.outports;
+      const outports = Object.keys(_outports).map(key => {
+        const port = _outports[key];
+        return (<Port 
+          key={this.props.key + port.label}
+          isIn={false}
+          highlightPort={this.props.highlightPort}
+          port={port}
+          />);
+      });
+
+      const _inports = this.props.ports.inports;
+      const inports = Object.keys(_inports).map(key => {
+        const port = _inports[key];
+        return (<Port 
+          isIn={true}
+          key={this.props.key + port.label}
+          highlightPort={this.props.highlightPort}
+          port={port}
+          />);
+      });
+
     return (
       <g
         className={`node drag ${this.props.selected ? ' selected' : ''} ${this.props.error ? ' error' : ''}`}
@@ -374,6 +402,8 @@ export default class Node extends React.Component {
         <rect className="node-border drag" x="0" y="0" width={width} rx={radius} ry={radius} height={height}/>
         <rect className="node-rect drag" x="3" y="3" width={width - 6} rx={radius - 2} ry={radius - 2} height={height - 6}/>
         <Icon width={width} height={height} radius={radius} icon={icon}/>
+        {outports}
+        {inports}
         <Label text={label} width={width} height={height} />
         <SubLabel text={sublabel} width={width} height={height} />
       </g>);

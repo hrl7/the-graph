@@ -1,41 +1,6 @@
-  module.exports.register = function (context) {
-    const TheGraph = context.TheGraph;
+// Port view
 
-  // Initialize configuration for the Port view.
-    TheGraph.config.port = {
-      container: {
-        className: 'port arrow'
-      },
-      backgroundCircle: {
-        className: 'port-circle-bg'
-      },
-      arc: {
-        className: 'port-arc'
-      },
-      innerCircle: {
-        ref: 'circleSmall'
-      },
-      text: {
-        ref: 'label',
-        className: 'port-label drag'
-      }
-    };
-
-    TheGraph.factories.port = {
-      createPortGroup: TheGraph.factories.createGroup,
-      createPortBackgroundCircle: TheGraph.factories.createCircle,
-      createPortArc: TheGraph.factories.createPath,
-      createPortInnerCircle: TheGraph.factories.createCircle,
-      createPortLabelText: TheGraph.factories.createText
-    };
-
-  // Port view
-
-    TheGraph.Port = React.createFactory(React.createClass({
-      displayName: 'TheGraphPort',
-      mixins: [
-        TheGraph.mixins.Tooltip
-      ],
+/*
       componentDidMount() {
       // Preview edge start
         ReactDOM.findDOMNode(this).addEventListener('tap', this.edgeStart);
@@ -122,7 +87,7 @@
           bubbles: true
         });
         ReactDOM.findDOMNode(this).dispatchEvent(edgeStartEvent);
-      },
+      }
       triggerDropOnTarget(event) {
       // If dropped on a child element will bubble up to port
         if (!event.relatedTarget) {
@@ -133,55 +98,73 @@
           bubbles: true
         });
         event.relatedTarget.dispatchEvent(dropEvent);
-      },
-      render() {
-        let style;
-        if (this.props.label.length > 7) {
-          const fontSize = 6 * (30 / (4 * this.props.label.length));
-          style = {fontSize: fontSize + 'px'};
-        }
-        let r = 4;
-      // Highlight matching ports
-        const highlightPort = this.props.highlightPort;
-        let inArc = TheGraph.arcs.inport;
-        let outArc = TheGraph.arcs.outport;
-        if (highlightPort && highlightPort.isIn === this.props.isIn && (highlightPort.type === this.props.port.type || this.props.port.type === 'any')) {
-          r = 6;
-          inArc = TheGraph.arcs.inportBig;
-          outArc = TheGraph.arcs.outportBig;
-        }
-
-        const backgroundCircleOptions = TheGraph.merge(TheGraph.config.port.backgroundCircle, {r: r + 1});
-        const backgroundCircle = TheGraph.factories.port.createPortBackgroundCircle.call(this, backgroundCircleOptions);
-
-        const arcOptions = TheGraph.merge(TheGraph.config.port.arc, {d: (this.props.isIn ? inArc : outArc)});
-        const arc = TheGraph.factories.port.createPortArc.call(this, arcOptions);
-
-        let innerCircleOptions = {
-          className: 'port-circle-small fill route' + this.props.route,
-          r: r - 1.5
-        };
-
-        innerCircleOptions = TheGraph.merge(TheGraph.config.port.innerCircle, innerCircleOptions);
-        const innerCircle = TheGraph.factories.port.createPortInnerCircle.call(this, innerCircleOptions);
-
-        let labelTextOptions = {
-          x: (this.props.isIn ? 5 : -5),
-          style,
-          children: this.props.label
-        };
-        labelTextOptions = TheGraph.merge(TheGraph.config.port.text, labelTextOptions);
-        const labelText = TheGraph.factories.port.createPortLabelText.call(this, labelTextOptions);
-
-        const portContents = [
-          backgroundCircle,
-          arc,
-          innerCircle,
-          labelText
-        ];
-
-        const containerOptions = TheGraph.merge(TheGraph.config.port.container, {title: this.props.label, transform: 'translate(' + this.props.x + ',' + this.props.y + ')'});
-        return TheGraph.factories.port.createPortGroup.call(this, containerOptions, portContents);
       }
-    }));
-  };
+      */
+
+// @flow
+
+import React from 'react';
+import Debug from "debug";
+
+import { Arcs } from '../../utils';
+
+const debug = Debug("graph:component:port");
+
+type Props = {
+  highlightPort: any,
+  port: any,
+  isIn: boolean,
+};
+
+export default class Port extends React.Component {
+
+  props: Props;
+
+  constructor(props: Props) {
+    super(props);
+  }
+
+  render() {
+    let style;
+    const label = this.props.port.label;
+    if (label.length > 7) {
+      const fontSize = 6 * (30 / (4 * label.length));
+      style = {fontSize: fontSize + 'px'};
+    }
+    let r = 4;
+      // Highlight matching ports
+    const highlightPort = this.props.highlightPort;
+    let inArc = Arcs.inport;
+    let outArc = Arcs.outport;
+    if (highlightPort && highlightPort.isIn === this.props.isIn && (highlightPort.type === this.props.port.type || this.props.port.type === 'any')) {
+      r = 6;
+      inArc = Arcs.inportBig;
+      outArc = Arcs.outportBig;
+    }
+
+    return (<g
+      title={label}
+      transform={`translate(${this.props.port.x},${this.props.port.y})`}
+      className="port arrow" >
+      <circle
+        className="port-circle-bg"
+        r={r + 1} />
+      <path
+        className="port-arc"
+        d={this.props.isIn ? inArc : outArc} />
+      <circle
+        className={`port-circle-small fill route ${this.props.route}`}
+        r={r - 1.5} />
+      <text
+        className="port-label drag"
+        x={this.props.isIn ? 5 : -5}
+        style={style}>
+        {this.props.label}
+      </text>
+    </g>);
+  }
+}
+
+Port.defaultProps = {
+
+};

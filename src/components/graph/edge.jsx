@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React from 'react';
 import Debug from 'debug';
 
 const debug = Debug('graph:edge');
@@ -20,7 +20,7 @@ export default class Edge extends React.Component {
     super(props);
   }
 
-    componentDidMount() {
+  componentDidMount() {
 /*
       var domNode = ReactDOM.findDOMNode(this);
 
@@ -38,7 +38,7 @@ export default class Edge extends React.Component {
         domNode.addEventListener("hold", this.showContext);
       }
       */
-    }
+  }
     /*
     dontPan(event) {
       // Don't drag under menu
@@ -109,64 +109,60 @@ export default class Edge extends React.Component {
       return true;
     }
     */
-    render() {
-      var sourceX = this.props.sX;
-      var sourceY = this.props.sY;
-      var targetX = this.props.tX;
-      var targetY = this.props.tY;
+  render() {
+    const sourceX = this.props.sX;
+    const sourceY = this.props.sY;
+    const targetX = this.props.tX;
+    const targetY = this.props.tY;
 
       // Organic / curved edge
-      let c1X, c1Y, c2X, c2Y;
-      if (targetX-5 < sourceX) {
-        const curveFactor = (sourceX - targetX) * CURVE / 200;
-        if (Math.abs(targetY-sourceY) < NODE_SIZE * 0.5) {
+    let c1X, c1Y, c2X, c2Y;
+    if (targetX - 5 < sourceX) {
+      const curveFactor = (sourceX - targetX) * CURVE / 200;
+      if (Math.abs(targetY - sourceY) < NODE_SIZE * 0.5) {
           // Loopback
-          c1X = sourceX + curveFactor;
-          c1Y = sourceY - curveFactor;
-          c2X = targetX - curveFactor;
-          c2Y = targetY - curveFactor;
-        } else {
-          // Stick out some
-          c1X = sourceX + curveFactor;
-          c1Y = sourceY + (targetY > sourceY ? curveFactor : -curveFactor);
-          c2X = targetX - curveFactor;
-          c2Y = targetY + (targetY > sourceY ? -curveFactor : curveFactor);
-        }
+        c1X = sourceX + curveFactor;
+        c1Y = sourceY - curveFactor;
+        c2X = targetX - curveFactor;
+        c2Y = targetY - curveFactor;
       } else {
-        // Controls halfway between
-        c1X = sourceX + (targetX - sourceX)/2;
-        c1Y = sourceY;
-        c2X = c1X;
-        c2Y = targetY;
+          // Stick out some
+        c1X = sourceX + curveFactor;
+        c1Y = sourceY + (targetY > sourceY ? curveFactor : -curveFactor);
+        c2X = targetX - curveFactor;
+        c2Y = targetY + (targetY > sourceY ? -curveFactor : curveFactor);
       }
+    } else {
+        // Controls halfway between
+      c1X = sourceX + (targetX - sourceX) / 2;
+      c1Y = sourceY;
+      c2X = c1X;
+      c2Y = targetY;
+    }
 
       // Make SVG path
 
-      const path = `M ${sourceX} ${sourceY} C ${c1X} ${c1Y} ${c2X} ${c2Y} ${targetX} ${targetY}`;
+    const path = `M ${sourceX} ${sourceY} C ${c1X} ${c1Y} ${c2X} ${c2Y} ${targetX} ${targetY}`;
 
-      const epsilon = 0.01;
-      let center = findPointOnCubicBezier(0.5, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY);
+    const epsilon = 0.01;
+    let center = findPointOnCubicBezier(0.5, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY);
 
       // estimate slope and intercept of tangent line
-      const getShiftedPoint = function (epsilon) {
-        return findPointOnCubicBezier(
+    const getShiftedPoint = function (epsilon) {
+      return findPointOnCubicBezier(
           0.5 + epsilon, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY);
-      };
-      const plus = getShiftedPoint(epsilon);
-      const minus = getShiftedPoint(-epsilon);
-      const m = 1 * (plus[1] - minus[1]) / (plus[0] - minus[0]);
-      const b = center[1] - (m * center[0]);
+    };
+    const plus = getShiftedPoint(epsilon);
+    const minus = getShiftedPoint(-epsilon);
+    const m = 1 * (plus[1] - minus[1]) / (plus[0] - minus[0]);
+    const b = center[1] - (m * center[0]);
 
-
-
-      let arrowLength = 12;
+    let arrowLength = 12;
       // Which direction should arrow point
-      if (plus[0] > minus[0]) {
-        arrowLength *= -1;
-      }
-      center = findLinePoint(center[0], center[1], m, b, -1*arrowLength/2);
-
-
+    if (plus[0] > minus[0]) {
+      arrowLength *= -1;
+    }
+    center = findLinePoint(center[0], center[1], m, b, -1 * arrowLength / 2);
 
     const points = perpendicular(center[0], center[1], m, arrowLength * 0.9);
     // For m === 0, figure out if arrow should be straight up or down
@@ -176,10 +172,10 @@ export default class Edge extends React.Component {
     const pointsArray = points.map(point => point.join(',')).join(' ');
 
     return (<g
-        className={(this.props.selected ? " selected" : "") + (this.props.animated ? " animated" : "")}
-        title={this.props.label}>
+      className={(this.props.selected ? ' selected' : '') + (this.props.animated ? ' animated' : '')}
+      title={this.props.label}>
       <path className="edge-bg"d={path}/>
-      <polygon points={pointsArray} className='arrow-bg' />
+      <polygon points={pointsArray} className="arrow-bg" />
       <path d={path} className={`edge-fg stroke route ${this.props.route}`}/>
       <path d={path} className="edge-touch" />
       <polygon points={pointsArray} className={`arrow fill route ${this.props.route}`} />
@@ -187,15 +183,14 @@ export default class Edge extends React.Component {
   }
 }
 
-
 // util
 
 // find point on line y = mx + b that is `offset` away from x,y
-const findLinePoint = (x: number , y: number, m: number, b: number, offset: number, flip: number) => {
-  var x1 = x + offset/Math.sqrt(1 + m*m);
-  var y1;
+const findLinePoint = (x: number, y: number, m: number, b: number, offset: number, flip: number) => {
+  const x1 = x + offset / Math.sqrt(1 + m * m);
+  let y1;
   if (Math.abs(m) === Infinity) {
-    y1 = y + (flip || 1) *offset;
+    y1 = y + (flip || 1) * offset;
   } else {
     y1 = (m * x1) + b;
   }
@@ -225,11 +220,11 @@ const findPointOnCubicBezier = (p, sx, sy, c1x, c1y, c2x, c2y, ex, ey) => {
   return [x, y];
 };
 // find points of perpendicular line length l centered at x,y
-const perpendicular =  (x, y, oldM, l) =>  {
-        const m = -1/oldM;
-        const b = y - m*x;
-        return [
-          findLinePoint(x, y, m, b, l/2),
-          findLinePoint(x, y, m, b, l/-2)
-    ];
+const perpendicular = (x, y, oldM, l) => {
+  const m = -1 / oldM;
+  const b = y - m * x;
+  return [
+    findLinePoint(x, y, m, b, l / 2),
+    findLinePoint(x, y, m, b, l / -2)
+  ];
 };

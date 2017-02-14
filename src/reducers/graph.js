@@ -1,16 +1,26 @@
 import Act from '../actions/Types';
+import Debug from "debug";
+
+const debug = Debug("graph:reducer:graph");
+let portInfo = {};
+const NODE_SIZE = 72;
+
 
 const InitialState = {
   rawGraph: {
     nodes: [],
     edges: [],
-    initializers: []
+    initializers: [],
+    inports: [],
+    outports: []
   },
   graph: null,
   components: {},
   loading: false,
   ready: false,
   nodeSize: 72,
+  nodes: [],
+  groups: [],
   scale: 1,
   width: window.innerWidth,
   height: window.innerHeight,
@@ -24,9 +34,12 @@ export default function graphReducer(state = InitialState, action) {
     case Act.LOAD_GRAPH_WAITING:
       return {...state, loading: true};
     case Act.LOAD_GRAPH_SUCCESS:
+      const components = componentsFromGraph(action.payload);
       return {...state,
         rawGraph: action.payload,
-        components: componentsFromGraph(action.payload),
+        nodes: resolveNode(action.payload, components),
+        groups: resolveGroup(action.payload),
+        components,
         loading: false,
         ...findFit(action.payload, state)
       };
@@ -34,6 +47,103 @@ export default function graphReducer(state = InitialState, action) {
       return state;
   }
 }
+
+const resolveGroup = (graph) => {
+  return graph.groups.map(group => {
+    debug(group);
+    if (group.nodes.length < 1) {
+      return null;
+    }
+    const limits = findMinMax(graph, group.nodes);
+    debug("limits: ", limits);
+    if (!limits) {
+      return null;
+    }
+    return {
+      ...group,
+      ...limits,
+      key: `group.${group.name}`
+    };
+  }).filter(Boolean);
+
+};
+
+const resolveNode = (graph, components) => {
+  const nodes = graph.nodes;
+  const getNodeById = id => {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === id) {
+        return nodes[i];
+      }
+    }
+    return null;
+  };
+  const getComponent = name => {
+    for (let i = 0; i < components.length; i++) {
+      if (components[i].name === name) {
+        return components[i];
+      }
+    }
+    return null;
+  };
+  const getPorts = (processName, componentName) => {
+    const node = getNodeById(processName);
+    let ports = portInfo[processName];
+
+      if (!ports) {
+        const inports = {};
+        const outports = {};
+        if (componentName) {
+          // Copy ports from library object
+          const component = getComponent(componentName);
+          if (!component) {
+            return {
+              inports: inports,
+              outports: outports
+            };
+          }
+          
+          let i, port, len;
+          const metadata = { width: 72, height: 72, ...node.metadata };
+          for (i=0, len=component.outports.length; i<len; i++) {
+            port = component.outports[i];
+            if (!port.name) { continue; }
+            outports[port.name] = {
+              label: port.name,
+              type: port.type,
+              x: metadata.width,
+              y: metadata.height / (len+1) * (i+1)
+            };
+          }
+
+          for (i=0, len=component.inports.length; i<len; i++) {
+            port = component.inports[i];
+            if (!port.name) { continue; }
+            inports[port.name] = {
+              label: port.name,
+              type: port.type,
+              x: 0,
+              y: metadata.height / (len+1) * (i+1)
+            };
+          }
+        }
+        ports = {
+          inports: inports,
+          outports: outports
+        };
+        portInfo[processName] = ports;
+      }
+      return ports;
+  };
+  return graph.nodes.map(node => {
+    return {
+      ports: getPorts(node.id, node.component),
+      ...node
+    };
+  });
+};
+
+
 
 const findFit = (graph, {width, height, nodeSize}) => {
   const limits = findMinMax(graph);
@@ -99,8 +209,8 @@ const findMinMax = (graph, nodes?) => {
     if (node.metadata.y < minY) {
       minY = node.metadata.y;
     }
-    const x = node.metadata.x + node.metadata.width;
-    const y = node.metadata.y + node.metadata.height;
+    const x = node.metadata.x + NODE_SIZE;
+    const y = node.metadata.y + NODE_SIZE;
     if (x > maxX) {
       maxX = x;
     }
@@ -108,7 +218,7 @@ const findMinMax = (graph, nodes?) => {
       maxY = y;
     }
   }
-    // Loop through exports
+  // Loop through exports
   let keys, exp;
   if (inports) {
     keys = Object.keys(inports);
@@ -154,7 +264,6 @@ const findMinMax = (graph, nodes?) => {
       }
     }
   }
-
   if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) {
     return null;
   }

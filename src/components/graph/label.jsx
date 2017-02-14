@@ -38,6 +38,7 @@ export default class Label extends React.Component {
         y={y - height * 1.5}
         />
       <text
+        className="node-label"
         x={x}
         y={y}>
         {text}
