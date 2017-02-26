@@ -171,14 +171,18 @@ export default class Edge extends React.Component {
     points.push(arrowTip);
     const pointsArray = points.map(point => point.join(',')).join(' ');
 
+    let route = 0;
+    if (this.props.metadata && this.props.metadata.route) {
+      route = this.props.metadata.route;
+    }
     return (<g
       className={(this.props.selected ? ' selected' : '') + (this.props.animated ? ' animated' : '')}
       title={this.props.label}>
       <path className="edge-bg"d={path}/>
       <polygon points={pointsArray} className="arrow-bg" />
-      <path d={path} className={`edge-fg stroke route ${this.props.route}`}/>
+      <path d={path} className={`edge-fg stroke route${this.props.route}`}/>
       <path d={path} className="edge-touch" />
-      <polygon points={pointsArray} className={`arrow fill route ${this.props.route}`} />
+      <polygon points={pointsArray} className={`arrow fill route${this.props.route}`} />
     </g>);
   }
 }

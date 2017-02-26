@@ -7,6 +7,9 @@ import Label from './label';
 import Icon from './icon';
 import Port from "./port";
 
+import { InPort, InPorts, OutPort, OutPorts } from "../type";
+
+
 const debug = Debug("graph:components:node");
 
   // PolymerGestures monkeypatch
@@ -232,10 +235,32 @@ const debug = Debug("graph:components:node");
   */
 
   // Node view
+
+
+type Props = {
+  x: number,
+  y: number,
+  icon: string,
+  label: string,
+  sublabel: string,
+
+  outports: ?OutPort[],
+  inports: ?InPort[],
+
+  selected: boolean,
+  key: string,
+  component: string,
+  highlightPort: string
+};
+
 export default class Node extends React.Component {
-  constructor(props) {
+
+  props: Props;
+
+  constructor(props: Props) {
     super(props);
   }
+
   componentDidMount() {
 
       // Dragging
@@ -253,7 +278,7 @@ export default class Node extends React.Component {
 
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props, nextState: any) {
       // Only rerender if changed
     return (
         nextProps.x !== this.props.x ||
@@ -261,11 +286,12 @@ export default class Node extends React.Component {
         nextProps.icon !== this.props.icon ||
         nextProps.label !== this.props.label ||
         nextProps.sublabel !== this.props.sublabel ||
-        nextProps.ports !== this.props.ports ||
-        nextProps.selected !== this.props.selected ||
-        nextProps.error !== this.props.error ||
-        nextProps.highlightPort !== this.props.highlightPort ||
-        nextProps.ports.dirty === true
+        nextProps.outports !== this.props.outports ||
+        nextProps.inports !== this.props.inports ||
+        nextProps.selected !== this.props.selected
+  //      nextProps.error !== this.props.error ||
+  //      nextProps.highlightPort !== this.props.highlightPort ||
+  //      nextProps.ports.dirty === true
     );
   }
 
@@ -277,17 +303,17 @@ export default class Node extends React.Component {
       }
       */
 
-    const metadata = this.props.metadata;
-    const label = metadata.label;
-    let sublabel = metadata.sublabel;
+    const props = this.props;
+    const label = props.label;
+    let sublabel = props.sublabel;
     if (!sublabel || sublabel === label) {
       sublabel = '';
     }
 
-    const x = metadata.x;
-    const y = metadata.y;
+    const x = props.x;
+    const y = props.y;
 
-      // TODO: these constants should be in config
+    // TODO: these constants should be in config
     const width = 72;
     const height = 72;
     const radius = 8;
@@ -368,12 +394,12 @@ export default class Node extends React.Component {
       var outportsOptions = TheGraph.merge(TheGraph.config.node.outports, { children: outportViews });
       var outportsGroup = TheGraph.factories.node.createNodeOutportsGroup.call(this, outportsOptions);
 */
+      debug(this.props);
 
-
-      const _outports = this.props.ports.outports;
+      const _outports: OutPorts = this.props.outports || {};
       const outports = Object.keys(_outports).map(key => {
-        const port = _outports[key];
-        return (<Port 
+        const port: OutPort = _outports[key];
+        return (<Port
           key={this.props.key + port.label}
           isIn={false}
           highlightPort={this.props.highlightPort}
@@ -381,10 +407,10 @@ export default class Node extends React.Component {
           />);
       });
 
-      const _inports = this.props.ports.inports;
+      const _inports: InPorts = this.props.inports || {};
       const inports = Object.keys(_inports).map(key => {
-        const port = _inports[key];
-        return (<Port 
+        const port: InPort = _inports[key];
+        return (<Port
           isIn={true}
           key={this.props.key + port.label}
           highlightPort={this.props.highlightPort}
@@ -404,7 +430,7 @@ export default class Node extends React.Component {
         <Icon width={width} height={height} radius={radius} icon={icon}/>
         {outports}
         {inports}
-        <Label text={label} width={width} height={height} />
+        <Label klass="node" text={label} width={width} height={height} />
         <SubLabel text={sublabel} width={width} height={height} />
       </g>);
   }

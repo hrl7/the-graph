@@ -26,7 +26,7 @@ export default class Group extends React.Component {
     debug(this.props);
       const x = this.props.minX - NODE_SIZE * 0.5;
       const y = this.props.minY - NODE_SIZE * 0.5;
-      const color = (this.props.color ? this.props.color : 0);
+      const color = (this.props.metadata.color ? this.props.metadata.color : 0);
       const selection = (this.props.isSelectionGroup ? 'selection drag' : '');
 
     return (<g
@@ -39,16 +39,17 @@ export default class Group extends React.Component {
         width={this.props.maxX - x + NODE_SIZE * 0.5}
         height={this.props.maxY - y + NODE_SIZE * 0.75}
         className={`group-box color${color} ${selection}`}/>
-      <Label        
-        className="group-label drag"
+      <text       
+        className="drag group-label"
         x={x + NODE_RADIUS}
-        y={y + 9}
-        label={this.props.label} />
+        y={y + 9} >
+        {this.props.name}
+      </text>
       <text   
         className="group-description"
         x={x + NODE_RADIUS}
         y={y + 24} >
-        {this.props.description}
+        {this.props.metadata.description}
       </text>
     </g>);
   }

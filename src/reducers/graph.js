@@ -1,3 +1,5 @@
+// @flow
+
 import Act from '../actions/Types';
 import Debug from "debug";
 
@@ -5,8 +7,22 @@ const debug = Debug("graph:reducer:graph");
 let portInfo = {};
 const NODE_SIZE = 72;
 
+type State = {
+  rawGraph: any;
+  graph: ?any;
+  components: ?any;
+  loading: boolean;
+  ready: boolean;
+  nodeSize: number;
+  nodes: any[];
+  group: any[];
+  scale: number;
+  width: number;
+  height: number;
+  fit: any;
+};
 
-const InitialState = {
+const InitialState: State = {
   rawGraph: {
     nodes: [],
     edges: [],
@@ -21,6 +37,7 @@ const InitialState = {
   nodeSize: 72,
   nodes: [],
   groups: [],
+
   scale: 1,
   width: window.innerWidth,
   height: window.innerHeight,
@@ -29,7 +46,7 @@ const InitialState = {
   }
 };
 
-export default function graphReducer(state = InitialState, action) {
+export default function graphReducer(state: State = InitialState, action) {
   switch (action.type) {
     case Act.LOAD_GRAPH_WAITING:
       return {...state, loading: true};
@@ -102,7 +119,7 @@ const resolveNode = (graph, components) => {
               outports: outports
             };
           }
-          
+
           let i, port, len;
           const metadata = { width: 72, height: 72, ...node.metadata };
           for (i=0, len=component.outports.length; i<len; i++) {
@@ -136,9 +153,14 @@ const resolveNode = (graph, components) => {
       return ports;
   };
   return graph.nodes.map(node => {
+    debug(node);
     return {
-      ports: getPorts(node.id, node.component),
-      ...node
+      //ports: getPorts(node.id, node.component),
+      ports: {
+        outports: [],
+        inports: []
+      },
+      ...node.metadata
     };
   });
 };

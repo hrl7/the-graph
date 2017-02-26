@@ -17,8 +17,10 @@ type Props = {
 };
 
 export default class IIP extends React.Component {
+
   props: Props;
-  constructor(props) {
+
+  constructor(props: Props) {
     super(props);
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -46,7 +48,7 @@ export default class IIP extends React.Component {
         <path className="iip-path" d={`M ${x} ${y} L ${x - 10} ${y}`}/>
         <TextBG
           className="iip-info"
-          height="5"
+          height={5}
           halign="right"
           x={x - 10}
           y={y}>

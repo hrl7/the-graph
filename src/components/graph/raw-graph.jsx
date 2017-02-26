@@ -22,9 +22,7 @@ class RawGraph extends React.Component {
     debug('raw graph initialized');
   }
   render() {
-    const nodes = this.props.nodes.map(node => {
-      return <Node key={node.id} {...node} />;
-    });
+    const nodes = this.props.nodes.map(node => <Node key={node.id} {...node} />);
     const rawNodes = this.props.rawGraph.nodes;
     const getNodeById = id => {
       for (let i = 0; i < rawNodes.length; i++) {
@@ -38,6 +36,7 @@ class RawGraph extends React.Component {
       const src = getNodeById(edge.from.node);
       const dst = getNodeById(edge.to.node);
       return <Edge
+        route={edge.metadata.route}
         key={edge.from.node + edge.to.node}
         sX={src.metadata.x + NODE_SIZE}
         sY={src.metadata.y + NODE_SIZE * 0.5}
@@ -54,33 +53,26 @@ class RawGraph extends React.Component {
     const _inports = this.props.rawGraph.inports;
     const inports = Object.keys(_inports).map(key => {
       const port = _inports[key];
+              var label = key;
+        var nodeKey = port.process;
+        var portKey = port.port;
+        if (!port.metadata) { 
+          port.metadata = {x:0, y:0}; 
+        }
+        var metadata = port.metadata;
+        if (!metadata.x) { metadata.x = 0; }
+        if (!metadata.y) { metadata.y = 0; }
+        if (!metadata.width) { metadata.width = NODE_SIZE; }
+        if (!metadata.height) { metadata.height = NODE_SIZE; }
+
+        //nodes.push(<Node key={`inport.node.${key}`} {...port}/>);
+
     });
 
-    const groups = this.props.groups.map(group => {
-
-        /*
-        var groupOptions = {
-          key: "group."+group.name,
-          graph: graph,
-          item: group,
-          minX: limits.minX,
-          minY: limits.minY,
-          maxX: limits.maxX,
-          maxY: limits.maxY,
-          label: group.name,
-          nodes: group.nodes,
-          description: group.metadata.description,
-          color: group.metadata.color,
-        */
-      return (<Group {...group}/>);
-    });
-
-    debug(this.props.groups);
-    debug(groups);
+    const groups = this.props.groups.map(group => <Group {...group}/>);
 
     return (
       <g>
-        <text stroke="white"> raw graph</text>
         {groups}
         {edges}
         {iips}

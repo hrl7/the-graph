@@ -18,6 +18,7 @@ type Props = {
 export default class TextBG extends React.Component {
 
   props: Props;
+  static defaultProps: Props;
 
   constructor(props: Props) {
     super(props);
@@ -45,25 +46,44 @@ export default class TextBG extends React.Component {
       textAnchor = 'end';
     }
 
-    return (<rect
-      className={this.props.className}
-      x={x}
-      y={y}
-      rx={radius}
-      ry={radius}
-      height={height * 1.1}
-      width={width} >
+    return (<g
+      className="node-label-bg">
+      <rect
+        className={this.props.className}
+        x={this.props.x}
+        y={this.props.y}
+        rx={radius}
+        ry={radius}
+        height={height * 1.1}
+        width={width} />
       <text
         x={this.props.x}
         y={this.props.y}>
         {this.props.text}
       </text>
-    </rect>);
+    </g>);
   }
 }
 
 TextBG.defaultProps = {
   className: 'text-bg-text',
-  textClassName: 'text-bg-text'
+  textClassName: 'text-bg-text',
+  src: "",
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  halign: "center",
+  text: ""
 };
-
+/*
+className: ?string,
+textClassName: ?string,
+src: string,
+x: number,
+y: number,
+width: number,
+height: number,
+halign: "center" | "right" | "bottom" | "top",
+text: ?string
+*/

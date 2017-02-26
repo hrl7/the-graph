@@ -631,7 +631,7 @@ module.exports.register = function (context) {
           tY: privateNode.metadata.y + privatePort.y,
           showContext: self.props.showContext
         };
-        expEdge = TheGraph.merge(TheGraph.config.graph.inportEdge, expEdge);
+        expEdge = TheGraph.merge(TheGraphGraphraph.config.graph.inportEdge, expEdge);
         edges.unshift(TheGraph.factories.graph.createGraphEdge.call(this, expEdge));
         return TheGraph.factories.graph.createGraphNode.call(this, expNode);
       });

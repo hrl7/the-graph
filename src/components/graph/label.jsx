@@ -19,23 +19,23 @@ export default class Label extends React.Component {
   render() {
     const
       height = 14,
-      x = this.props.width * 0.5,
-      y = this.props.height + 15,
+      x = this.props.x || this.props.width * 0.5,
+      y = this.props.y || this.props.height + 15,
       text = this.props.text,
       width = text.length * height * 2 / 3,
       radius = height * 0.5
       ;
 
     return (<g
-      className="node-label-bg" >
+      className="${this.props.klass}-label-bg" >
       <rect
         className="text-bg-rect"
         width={width}
         height={height * 1.1}
         rx={radius}
         ry={radius}
-        x={x - width * 1.5}
-        y={y - height * 1.5}
+        x={x - width * 0.5}
+        y={y - height * 0.5}
         />
       <text
         className="node-label"
