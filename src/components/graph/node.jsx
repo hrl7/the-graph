@@ -256,6 +256,7 @@ type Props = {
 export default class Node extends React.Component {
 
   props: Props;
+  static defaultProps: Props;
 
   constructor(props: Props) {
     super(props);
@@ -275,7 +276,6 @@ export default class Node extends React.Component {
       // if (this.props.showContext) {
       //  ReactDOM.findDOMNode(this).addEventListener("contextmenu", this.showContext);
       //  ReactDOM.findDOMNode(this).addEventListener("hold", this.showContext);
-
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: any) {
@@ -310,8 +310,8 @@ export default class Node extends React.Component {
       sublabel = '';
     }
 
-    const x = props.x;
-    const y = props.y;
+    const x: number = props.x;
+    const y: number = props.y;
 
     // TODO: these constants should be in config
     const width = 72;
@@ -394,8 +394,6 @@ export default class Node extends React.Component {
       var outportsOptions = TheGraph.merge(TheGraph.config.node.outports, { children: outportViews });
       var outportsGroup = TheGraph.factories.node.createNodeOutportsGroup.call(this, outportsOptions);
 */
-      debug(this.props);
-
       const _outports: OutPorts = this.props.outports || {};
       const outports = Object.keys(_outports).map(key => {
         const port: OutPort = _outports[key];
@@ -433,25 +431,5 @@ export default class Node extends React.Component {
         <Label klass="node" text={label} width={width} height={height} />
         <SubLabel text={sublabel} width={width} height={height} />
       </g>);
+    }
   }
-  }
-/*
-  TheGraph.factories.node = {
-    createNodeGroup: TheGraph.factories.createGroup,
-    createNodeBackgroundRect: TheGraph.factories.createRect,
-    createNodeBorderRect: TheGraph.factories.createRect,
-    createNodeInnerRect: TheGraph.factories.createRect,
-    createNodeIconText: TheGraph.factories.createText,
-    createNodeIconSVG: TheGraph.factories.createImg,
-    createNodeInportsGroup: TheGraph.factories.createGroup,
-    createNodeOutportsGroup: TheGraph.factories.createGroup,
-    createNodeLabelGroup: TheGraph.factories.createGroup,
-    createNodeLabelRect: TheGraph.factories.createRect,
-    createNodeLabelText: TheGraph.factories.createText,
-    createNodeSublabelGroup: TheGraph.factories.createGroup,
-    createNodeSublabelRect: TheGraph.factories.createRect,
-    createNodeSublabelText: TheGraph.factories.createText,
-    createNodePort: createNodePort
-  };
-
-*/

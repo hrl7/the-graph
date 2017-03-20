@@ -9,6 +9,8 @@ import IIP from './iip';
 import Edge from './edge';
 import Group from "./group";
 
+import { InPort } from "../type";
+
 const debug = Debug('graph:raw-graph');
 const NODE_SIZE = 72;
 
@@ -22,53 +24,29 @@ class RawGraph extends React.Component {
     debug('raw graph initialized');
   }
   render() {
-    const nodes = this.props.nodes.map(node => <Node key={node.id} {...node} />);
-    const rawNodes = this.props.rawGraph.nodes;
-    const getNodeById = id => {
-      for (let i = 0; i < rawNodes.length; i++) {
-        if (rawNodes[i].id === id) {
-          return rawNodes[i];
-        }
-      }
-      return null;
-    };
-    const edges = this.props.rawGraph.edges.map(edge => {
-      const src = getNodeById(edge.from.node);
-      const dst = getNodeById(edge.to.node);
-      return <Edge
-        route={edge.metadata.route}
-        key={edge.from.node + edge.to.node}
-        sX={src.metadata.x + NODE_SIZE}
-        sY={src.metadata.y + NODE_SIZE * 0.5}
-        tX={dst.metadata.x}
-        tY={dst.metadata.y + NODE_SIZE * 0.5}/>;
-    });
-
-    const iips = this.props.rawGraph.initializers.map(iip => {
-      // const src = getNodeById(edge.from.node);
-      const dst = getNodeById(iip.to.node);
-      return (<IIP key={iip.from + iip.to} x={dst.metadata.x} y={dst.metadata.y} label={iip.from.data} />);
-    });
-
-    const _inports = this.props.rawGraph.inports;
+/*
     const inports = Object.keys(_inports).map(key => {
-      const port = _inports[key];
-              var label = key;
-        var nodeKey = port.process;
-        var portKey = port.port;
-        if (!port.metadata) { 
-          port.metadata = {x:0, y:0}; 
+      const port: InPort = _inports[key];
+      const label = key;
+      const nodeKey = port.process;
+      const portKey = port.port;
+        if (!port.metadata) {
+          port.metadata = {x:0, y:0};
         }
-        var metadata = port.metadata;
-        if (!metadata.x) { metadata.x = 0; }
-        if (!metadata.y) { metadata.y = 0; }
-        if (!metadata.width) { metadata.width = NODE_SIZE; }
-        if (!metadata.height) { metadata.height = NODE_SIZE; }
+        if (!port.x) { port.x = 0; }
+        if (!port.y) { port.y = 0; }
+        if (!port.width) { port.width = NODE_SIZE; }
+        if (!port.height) { port.height = NODE_SIZE; }
 
         //nodes.push(<Node key={`inport.node.${key}`} {...port}/>);
 
     });
+    */
+    const nodes = this.props.nodes.map(node => <Node key={node.id} {...node} />);
+    const iips = this.props.iips.map(iip => <IIP {...iip}/>);
+    const inports = this.props.inports.map(inport => <InPort {...inport}/>);
 
+    const edges = this.props.edges.map(edge => <Edge {...edge}/>);
     const groups = this.props.groups.map(group => <Group {...group}/>);
 
     return (

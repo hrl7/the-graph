@@ -3,9 +3,15 @@
 import Act from '../actions/Types';
 import Debug from "debug";
 
+import { ReducedNode } from "../components/type";
 const debug = Debug("graph:reducer:graph");
 let portInfo = {};
 const NODE_SIZE = 72;
+
+type Action = {
+  type: string,
+  payload: any
+};
 
 type State = {
   rawGraph: any;
@@ -14,8 +20,12 @@ type State = {
   loading: boolean;
   ready: boolean;
   nodeSize: number;
-  nodes: any[];
-  group: any[];
+  nodes: ReducedNode[];
+  groups: any[];
+  edges: any[];
+  iips: any[];
+  inports: any[];
+  outports: any[];
   scale: number;
   width: number;
   height: number;
@@ -37,7 +47,10 @@ const InitialState: State = {
   nodeSize: 72,
   nodes: [],
   groups: [],
-
+  iips: [],
+  inports: [],
+  outports: [],
+  edges: [],
   scale: 1,
   width: window.innerWidth,
   height: window.innerHeight,
@@ -46,17 +59,19 @@ const InitialState: State = {
   }
 };
 
-export default function graphReducer(state: State = InitialState, action) {
+export default function graphReducer(state: State = InitialState, action: Action) {
   switch (action.type) {
     case Act.LOAD_GRAPH_WAITING:
       return {...state, loading: true};
     case Act.LOAD_GRAPH_SUCCESS:
       const components = componentsFromGraph(action.payload);
       return {...state,
-        rawGraph: action.payload,
         nodes: resolveNode(action.payload, components),
+        edges: resolveEdge(action.payload, components),
         groups: resolveGroup(action.payload),
         components,
+        inports: resolveInports(action.payload, components),
+        iips: resolveIIPs(action.payload, components),
         loading: false,
         ...findFit(action.payload, state)
       };
@@ -64,15 +79,78 @@ export default function graphReducer(state: State = InitialState, action) {
       return state;
   }
 }
+const resolveIIPs = (graph, components) => {
+  debug(graph);
+  const nodes = graph.nodes;
+  const getNodeById = id => {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === id) {
+        return nodes[i];
+      }
+    }
+    return null;
+  };
+  return graph.initializers.map(iip => {
+
+    const dst = getNodeById(iip.to.node);
+    if (!dst || !iip) {
+      return null;
+    }
+    debug(dst, iip);
+    return {
+      key: iip.from + iip.to,
+      x: dst.metadata.x,
+      y: dst.metadata.y,
+      label: iip.from.data
+    };
+  }).filter(Boolean);
+};
+
+const resolveInports = (graph, components) => {
+  return [];
+};
+
+const resolveEdge = (graph, components) => {
+  const nodes = graph.nodes;
+  const getNodeById = id => {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === id) {
+        return nodes[i];
+      }
+    }
+    return null;
+  };
+  return graph.edges.map(edge => {
+    const src = getNodeById(edge.from.node);
+    const dst = getNodeById(edge.to.node);
+    if(!src || !dst) {
+      return null;
+    }
+    const label = src.metadata.label + '() ' +
+      edge.from.port.toUpperCase() +
+      (edge.from.hasOwnProperty('index') ? '['+edge.from.index+']' : '') + ' -> ' +
+      edge.to.port.toUpperCase() +
+      (edge.to.hasOwnProperty('index') ? '['+edge.to.index+']' : '') + ' ' +
+      dst.metadata.label + '()';
+
+    return {
+      route: edge.metadata.route,
+      label,
+      key: edge.from.node + edge.to.node,
+      sX: src.metadata.x + NODE_SIZE,
+      sY: src.metadata.y + NODE_SIZE * 0.5,
+      tX: dst.metadata.x,
+      tY: dst.metadata.y + NODE_SIZE * 0.5
+    };
+  }).filter(Boolean);
+};
 
 const resolveGroup = (graph) => {
   return graph.groups.map(group => {
-    debug(group);
     if (group.nodes.length < 1) {
       return null;
     }
     const limits = findMinMax(graph, group.nodes);
-    debug("limits: ", limits);
     if (!limits) {
       return null;
     }
@@ -153,7 +231,6 @@ const resolveNode = (graph, components) => {
       return ports;
   };
   return graph.nodes.map(node => {
-    debug(node);
     return {
       //ports: getPorts(node.id, node.component),
       ports: {

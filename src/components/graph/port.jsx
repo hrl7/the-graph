@@ -111,7 +111,7 @@ import { Arcs } from '../../utils';
 const debug = Debug("graph:component:port");
 
 type Props = {
-  highlightPort: any,
+  highlightPort: string,
   port: any,
   isIn: boolean,
 };

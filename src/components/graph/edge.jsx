@@ -2,21 +2,25 @@
 import React from 'react';
 import Debug from 'debug';
 
-const debug = Debug('graph:edge');
+const debug = Debug('graph:components:edge');
 
 const NODE_SIZE = 72;
 const CURVE = NODE_SIZE;
 
-type Props = {
+export type EdgeProps = {
   sX: number,
   sY: number,
   tX: number,
-  tY: number
+  tY: number,
+  label: string,
+  route: string
 };
 
 export default class Edge extends React.Component {
 
-  constructor(props) {
+  props: EdgeProps;
+
+  constructor(props: EdgeProps) {
     super(props);
   }
 
@@ -166,7 +170,7 @@ export default class Edge extends React.Component {
 
     const points = perpendicular(center[0], center[1], m, arrowLength * 0.9);
     // For m === 0, figure out if arrow should be straight up or down
-    const flip = plus[1] > minus[1] ? -1 : 1;
+    const flip: number = plus[1] > minus[1] ? -1 : 1;
     const arrowTip = findLinePoint(center[0], center[1], m, b, arrowLength, flip);
     points.push(arrowTip);
     const pointsArray = points.map(point => point.join(',')).join(' ');
@@ -190,11 +194,11 @@ export default class Edge extends React.Component {
 // util
 
 // find point on line y = mx + b that is `offset` away from x,y
-const findLinePoint = (x: number, y: number, m: number, b: number, offset: number, flip: number) => {
+const findLinePoint = (x: number, y: number, m: number, b: number, offset: number, flip: number = 1) => {
   const x1 = x + offset / Math.sqrt(1 + m * m);
   let y1;
   if (Math.abs(m) === Infinity) {
-    y1 = y + (flip || 1) * offset;
+    y1 = y + flip * offset;
   } else {
     y1 = (m * x1) + b;
   }

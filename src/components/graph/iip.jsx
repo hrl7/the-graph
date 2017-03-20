@@ -7,7 +7,9 @@ const NODE_SIZE = 72;
 
 import React from 'react';
 import TextBG from './text-bg';
+import Debug from 'debug';
 
+const debug = Debug('graph:components:iip');
   // Edge view
 
 type Props = {
@@ -32,6 +34,7 @@ export default class IIP extends React.Component {
     );
   }
   render() {
+    debug(this.props);
     const x = this.props.x,
       y = this.props.y + NODE_SIZE * 0.5;
 

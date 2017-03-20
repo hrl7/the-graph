@@ -13,3 +13,7 @@ export type OutPorts = {
 export type InPorts = {
   [id: string]: Inport;
 }
+
+export type ReducedNode = {
+
+};
