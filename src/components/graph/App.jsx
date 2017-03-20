@@ -1,12 +1,12 @@
 // @flow
-// from the-graph/the-graph.js Line 281
 
 import React from 'react';
 
 import {merge} from '../../utils';
 import RawGraph from './raw-graph';
 import Tooltip from './tooltip';
-
+import Debug from 'debug';
+const debug = Debug("graph:components:app");
 type Props = {
   className: string,
   src: string,
@@ -116,6 +116,55 @@ export default class App extends React.Component {
     this.state = InitialState;
     window.app = this;
 
+    this.onWheel = (event) => {
+      // Don't bounce
+      event.preventDefault();
+
+      debug(event.deltaY);
+      if (!this.zoomFactor) { // WAT
+        this.zoomFactor = 0;
+      }
+
+      // Safari is wheelDeltaY
+      this.zoomFactor += event.deltaY ? event.deltaY : 0-event.wheelDeltaY;
+      this.zoomX = event.clientX;
+      this.zoomY = event.clientY;
+      requestAnimationFrame(this.scheduleWheelZoom);
+    };
+
+    this.scheduleWheelZoom = () => {
+      if (isNaN(this.zoomFactor)) { return; }
+
+      // Speed limit
+      var zoomFactor = this.zoomFactor/-500;
+      zoomFactor = Math.min(0.5, Math.max(-0.5, zoomFactor));
+      var scale = this.state.scale + (this.state.scale * zoomFactor);
+      this.zoomFactor = 0;
+
+      if (scale < this.state.minZoom) {
+        scale = this.state.minZoom;
+      }
+      else if (scale > this.state.maxZoom) {
+        scale = this.state.maxZoom;
+      }
+      if (scale === this.state.scale) { return; }
+
+      // Zoom and pan transform-origin equivalent
+      var scaleD = scale / this.state.scale;
+      var currentX = this.state.x;
+      var currentY = this.state.y;
+      var oX = this.zoomX;
+      var oY = this.zoomY;
+      var x = scaleD * (currentX - oX) + oX;
+      var y = scaleD * (currentY - oY) + oY;
+      debug(scale, x, y);
+      this.setState({
+        scale: scale,
+        x: x,
+        y: y,
+        tooltipVisible: false
+      });
+    };
     this.renderGrid = () => {
       const cvs = this.refs['grid-canvas'];
       if (!cvs) {
@@ -198,7 +247,7 @@ export default class App extends React.Component {
     }
 
     const config = this.props;
-
+    debug(this.state);
     const graphElementOptions = {
       graph: this.props.graph,
       scale: this.state.scale,
@@ -227,7 +276,7 @@ export default class App extends React.Component {
       <div {...containerOptions} >
         <canvas ref="grid-canvas" {...canvasOptions} />
 
-        <svg className="the-graph-dark" width={window.innerWidth} height={window.innerHeight} >
+        <svg className="the-graph-dark" onWheel={this.onWheel} width={window.innerWidth} height={window.innerHeight} >
           <g {...svgGroupOptions} >
             <RawGraph {...graphElementOptions} width={window.innerWidth} height={window.innerHeight} />
           </g>

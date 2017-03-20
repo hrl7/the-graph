@@ -23,7 +23,6 @@ class ToolTip extends React.Component {
   props: Props;
   state: State;
   constructor(props) {
-    console.log(props);
     super(props);
     this.state = Object.assign(InitialState, props);
   }
